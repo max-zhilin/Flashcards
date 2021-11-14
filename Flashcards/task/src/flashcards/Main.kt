@@ -1,3 +1,8 @@
+/*
+ * Copyright 2021 Max Zhilin
+ * Use of this source code is governed by the X11 License.
+ */
+
 package flashcards
 
 import java.io.File
