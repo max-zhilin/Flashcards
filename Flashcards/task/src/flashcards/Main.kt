@@ -12,8 +12,14 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 
-fun main() {
+fun main(args: Array<String>) {
+    val options = Options.parse(args)
+
     val cards = Cards()
+
+    options.importFileName?.let {
+        cards.import(it)?.also { n -> println("$n cards have been loaded.") }
+    }
 
     do {
         println("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
@@ -102,6 +108,10 @@ fun main() {
     } while (action != "exit")
 
     println("Bye bye!")
+
+    options.exportFileName?.let {
+        cards.export(it).also { n -> println("$n cards have been saved.") }
+    }
 }
 
 class Cards {
@@ -181,5 +191,28 @@ object Log : ArrayList<String>() {
 
     fun save(fileName: String) {
         File(fileName).writeText(this.joinToString("\n"))
+    }
+}
+
+class Options private constructor(val importFileName: String?, val exportFileName: String?) {
+
+    companion object {
+        fun parse(args: Array<String>): Options {
+            var importOption: String? = null
+            var exportOption: String? = null
+            var i = 0
+            while (i < args.size) {
+                if (args[i] == "-import") {
+                    importOption = args[++i]
+                }
+                if (args[i] == "-export") {
+                    exportOption = args[++i]
+                }
+
+                i++
+            }
+
+            return Options(importOption, exportOption)
+        }
     }
 }
